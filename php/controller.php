@@ -53,7 +53,6 @@ if (isset($_GET['command'])) {
     $userCommand = urldecode($_GET['command']);
     $userCommand = escapeshellcmd($userCommand);
     //Parse the string into small chunks
-    list($userCommand, $arg1,$arg2) = explode(' ',$userCommand);
     // var_dump($arg1);
     
 } else {
@@ -62,17 +61,29 @@ if (isset($_GET['command'])) {
 
 //Pass arguments
 //Pass session information
+$s = 'python open.py';
 
 // Commands
 $commands = array(
-    'door' => 'python hello.py ' . $arg1 . $arg2,
+    'door' => 'python hello.py ',
+    'user' => 'python open.py ',
     'helloworld' => 'java helloworld',
     'ls' => 'ls',
     'sessionid' => 'echo ' . $basePath . $sessionid ,
-    'start' => 'cat run.html',
+    'start' => $s,
     'hang yourself' => 'cat hello.txt',
+    's1' => 'echo  ' + $basePath . "/creation_files/creation_1",
+    's2' => 'cat  '+ $basePath . "/creation_files/creation_2",
+    's3' => 'cat  '+ $basePath . "/creation_files/creation_3",
+    's4' => 'cat  '+ $basePath . "/creation_files/creation_4",
     'hello *' => 'echo $2',
-    '*' => '$1',
+    // '*' => '$1',
+    'Jack' => $s,
+    'boy' => $s,
+    '3' => $s,
+    '1' => $s,
+    '2' => $s,
+    '4' => $s,
 );
 
 
@@ -125,6 +136,7 @@ if (false !== $userCommand) {
     if (!empty($allow)) {
         if (!searchCommand($userCommand, $allow)) {
             $these = implode('<br>', $allow);
+            // die();
             die("<span class='error'>Sorry, but this command not allowed. Try these:<br>{$these}</span>\n");
         }
     }
@@ -165,7 +177,10 @@ if (false !== $userCommand) {
     list($output, $error, $code) = executeCommand($command);
 
     header("Content-Type: text/plain; charset=utf-8");
-    echo formatOutput($userCommand, htmlspecialchars($output));
+    if( $command !== "start" )
+        echo formatOutput($userCommand, ($output));
+    else 
+        echo formatOutput($userCommand, ($output));
     // echo htmlspecialchars($error);
 
     exit(0); // Terminate app

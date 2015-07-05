@@ -148,7 +148,7 @@
         
         function runCmd(command){
             var socket = io.connect('http://mysterychat-jelec.c9.io/');
-            socket.emit('identify', 'heroCommands');
+            socket.emit('identify', 'System');
             socket.emit('message', command);
             
             socket.on('connect', function () {
@@ -182,7 +182,7 @@
                 return false;
             }
 
-            $("<code>" + window.currentDirName + "&nbsp;" + window.currentUser + "$&nbsp;" + command + "</code><br>").appendTo(screen);
+            // $("<code>" + window.currentDirName + "&nbsp;" + window.currentUser + "$&nbsp;" + command + "</code><br>").appendTo(screen);
             scroll();
             input.val('');
             form.hide();

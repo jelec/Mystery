@@ -16,8 +16,8 @@
 <body ng-controller="ChatController">
 <pre></pre>
 <form>
-    <div id="currentDirName"><?php echo "Hello" ?></div>
-    <div>&nbsp;<?php echo "Hero" ?>$&nbsp;</div>
+    <div id="currentDirName"><?php echo "Dark Room - " ?></div>
+    <div>&nbsp;<font color="red"><?php echo "Hero" ?>$&nbsp;</font></div>
     <div id="command"><input type="text" value=""></div>
 </form>
 </body>

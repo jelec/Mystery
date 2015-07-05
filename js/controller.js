@@ -28,7 +28,13 @@
 
     socket.on('message', function (msg) {
       $scope.messages.push(msg);
-      addMessage("<font color='red'>" + msg.name + "</font> " + ": " + msg.text + "<br>");
+      if(msg.name !== 'System' && msg.name !== "hero")
+        addMessage("<font color='yellow'>" + msg.name + "</font> " + ": " + msg.text + "<br>");
+      else if (msg.name === "hero") 
+        addMessage("<font color='#60baf7'>" + msg.name + "</font> " + ": " + msg.text + "<br>");
+    //   else 
+        // addMessage("<font color='yellow'>" + msg.name + "</font> " + ": " + msg.text + "<br>");
+      
       console.log(msg);
       $scope.$apply();
     });
