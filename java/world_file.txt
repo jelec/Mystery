@@ -1,0 +1,65 @@
+{
+    "world": {
+        "rooms":[
+            {"0001":[
+                {"room_name":"Living Quarters"},
+                {"objects":[
+                    "0001",
+                    "0002",
+                    "0003"
+                ]}
+            ]},
+            {"0002":[
+                {"room_name":"Kitchen"},
+                {"objects":[
+                    "0004",
+                    "0005",
+                    "0006"
+                ]}
+            ]}
+        ],
+        
+        "objects":[
+            {"0001":[
+                {"object_name":"door handle"},
+                {"identified":"false"},
+                {"actions":[
+                    {"1":"Pull it"},
+                    {"2":"Push it"},
+                    {"3":"Force it"}
+                ]}
+            ]},
+            {"0002":[
+                {"object_name":"bed sheets"},
+                {"identified":"false"},
+                {"actions":[
+                    {"1":"Lift it"},
+                    {"2":"Push it aside"},
+                    {"3":"Flip it over"}
+                ]}
+            ]}
+        ],
+        
+        "objectives":[
+            {"01":[
+                {"description":"Find storage key"},
+                {"complete":"false"}
+            ]},
+            {"02":[
+                {"description":"Find sewers key"},
+                {"complete":"false"}
+            ]}
+        ],
+        
+        "users":[
+            {"000001":[
+                {"location":"r_1"},
+                {"object":"o_001"}
+            ]},
+            {"000002":[
+                {"location":"r_2"},
+                {"object":"-"}
+            ]}
+        ]
+    }
+}

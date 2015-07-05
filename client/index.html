@@ -10,9 +10,10 @@
         padding-top: 60px;
       }
     </style>
+    <script src="http://mysterychat-jelec.c9.io/socket.io/socket.io.js"></script>
     <script>
       function ChatController($scope) {
-        var socket = io.connect();
+        var socket = io.connect('http://mysterychat-jelec.c9.io/');
 
         $scope.messages = [];
         $scope.roster = [];

@@ -129,7 +129,7 @@
     window.currentUser = '<?php echo "Hero" ?>';
     window.titlePattern = "* — console";
     window.document.title = window.titlePattern.replace('*', window.currentDirName);
-
+    
     /**
      * Init console.
      */
@@ -142,6 +142,40 @@
         };
         input.history();
         input.autocomplete(<?php echo json_encode($autocomplete); ?>);
+        
+        //Routinely request for messages to the screen and then 
+        
+        
+        function runCmd(command){
+            var socket = io.connect('http://mysterychat-jelec.c9.io/');
+            socket.emit('identify', 'heroCommands');
+            socket.emit('message', command);
+            
+            socket.on('connect', function () {
+                socket.emit('identify', 'hero');
+            });
+            
+            $.get('', {'command': command, 'cd': window.currentDir}, function (output) {
+                var pattern = /^set current directory (.+?)$/i;
+                if (matches = output.match(pattern)) {
+                    window.currentDir = matches[1];
+                    window.currentDirName = window.currentDir.split('/').pop();
+                    $('#currentDirName').text(window.currentDirName);
+                    window.document.title = window.titlePattern.replace('*', window.currentDirName);
+                } else {
+                    screen.append(output);
+                }
+            })
+                .fail(function () {
+                    screen.append("<span class='error'>Command is sent, but due to an HTTP error result is not known.</span>\n");
+                })
+                .always(function () {
+                    form.show();
+                    scroll();
+                });
+            return false;
+        }
+        
         form.submit(function () {
             var command = $.trim(input.val());
             if (command == '') {
@@ -153,7 +187,7 @@
             input.val('');
             form.hide();
             input.addHistory(command);
-
+            socket.emit('message', command);
             $.get('', {'command': command, 'cd': window.currentDir}, function (output) {
                 var pattern = /^set current directory (.+?)$/i;
                 if (matches = output.match(pattern)) {
@@ -174,6 +208,10 @@
                 });
             return false;
         });
+        
+        // Initialization Commands
+        runCmd("start");
+        
 
         $(document).keydown(function () {
             input.focus();

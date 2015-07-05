@@ -15,19 +15,14 @@
 $users = array();
 $realm = 'Console';
 
+session_start();
+
+$sessionid = session_id();
+$basePath = "/home/ubuntu/workspace/data/";
+
 // Console theme.
 // Available styles: white, green, grey, far, ubuntu
 $theme = 'ubuntu';
-
-// Commands
-$commands = array(
-    'door' => 'python hello.py',
-    'helloworld' => 'java helloworld',
-    // '*' => '$1',
-    'start' => 'cat run.html',
-    'hangYourself' => 'cat hello.txt',
-    // '*' => '$1',
-);
 
 // Start with this dir.
 $currentDir = __DIR__;
@@ -37,17 +32,6 @@ $allowChangeDir = true;
 $allow = array();
 $deny = array();
 
-// Next comes the code...
-
-###############################################
-#                Autocomplete                 #
-###############################################
-
-$autocomplete = array(
-    '^\w*$' => array('door','grab', 'enter', 'kill', 'jump', 'hangYourself'),
-    '^git \w*$' => array('status', 'push', 'pull', 'add', 'bisect', 'branch', 'checkout', 'clone', 'commit', 'diff', 'fetch', 'grep', 'init', 'log', 'merge', 'mv', 'rebase', 'reset', 'rm', 'show', 'tag', 'remote'),
-    '^git \w* .*' => array('HEAD', 'origin', 'master', 'production', 'develop', 'rename', '--cached', '--global', '--local', '--merged', '--no-merged', '--amend', '--tags', '--no-hardlinks', '--shared', '--reference', '--quiet', '--no-checkout', '--bare', '--mirror', '--origin', '--upload-pack', '--template=', '--depth', '--help'),
-);
 
 ###############################################
 #                Controller                   #
@@ -62,14 +46,35 @@ if (is_readable($file = __DIR__ . '/console.config.php')) {
     include $file;
 }
 
+
 // If we have a user command execute it.
 // Otherwise send user interface.
 if (isset($_GET['command'])) {
     $userCommand = urldecode($_GET['command']);
     $userCommand = escapeshellcmd($userCommand);
+    //Parse the string into small chunks
+    list($userCommand, $arg1,$arg2) = explode(' ',$userCommand);
+    // var_dump($arg1);
+    
 } else {
     $userCommand = false;
 }
+
+//Pass arguments
+//Pass session information
+
+// Commands
+$commands = array(
+    'door' => 'python hello.py ' . $arg1 . $arg2,
+    'helloworld' => 'java helloworld',
+    'ls' => 'ls',
+    'sessionid' => 'echo ' . $basePath . $sessionid ,
+    'start' => 'cat run.html',
+    'hang yourself' => 'cat hello.txt',
+    'hello *' => 'echo $2',
+    '*' => '$1',
+);
+
 
 // If can - get current dir.
 if ($allowChangeDir && isset($_GET['cd'])) {
@@ -161,7 +166,7 @@ if (false !== $userCommand) {
 
     header("Content-Type: text/plain; charset=utf-8");
     echo formatOutput($userCommand, htmlspecialchars($output));
-    echo htmlspecialchars($error);
+    // echo htmlspecialchars($error);
 
     exit(0); // Terminate app
 } else {
@@ -207,10 +212,13 @@ function executeCommand($command)
     );
 
     $process = proc_open($command, $descriptors, $pipes);
-
+    
     if (!is_resource($process)) {
         die("Can't open resource with proc_open.");
     }
+    
+    //Engage constantly with the console service.
+    
 
     // Nothing to push to input.
     fclose($pipes[0]);
@@ -289,8 +297,17 @@ function httpDigestParse($txt)
     return $needed_parts ? false : $data;
 }
 
+// Next comes the code...
 
 ###############################################
-#                    View                     #
+#                Autocomplete                 #
 ###############################################
+
+$autocomplete = array(
+    '^\w*$' => array_keys($commands), 
+    // '^\w*$' => array('door','grab', 'enter', 'kill', 'jump', 'hangYourself'),
+    '^git \w*$' => array('status', 'push', 'pull', 'add', 'bisect', 'branch', 'checkout', 'clone', 'commit', 'diff', 'fetch', 'grep', 'init', 'log', 'merge', 'mv', 'rebase', 'reset', 'rm', 'show', 'tag', 'remote'),
+    '^git \w* .*' => array('HEAD', 'origin', 'master', 'production', 'develop', 'rename', '--cached', '--global', '--local', '--merged', '--no-merged', '--amend', '--tags', '--no-hardlinks', '--shared', '--reference', '--quiet', '--no-checkout', '--bare', '--mirror', '--origin', '--upload-pack', '--template=', '--depth', '--help'),
+);
+
 ?>
